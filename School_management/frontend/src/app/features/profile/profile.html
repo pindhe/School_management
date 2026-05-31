@@ -1,0 +1,63 @@
+<div class="page-header">
+  <div>
+    <h1>My Profile</h1>
+    <p>Manage your personal information and password.</p>
+  </div>
+</div>
+
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 20px">
+  <mat-card appearance="outlined" class="card-pad">
+    <h2 style="margin-top: 0">Personal Information</h2>
+    <p style="opacity: 0.6; margin-top: -8px">
+      Username <strong>{{ user()?.username }}</strong> &middot; Role
+      <strong>{{ user()?.role }}</strong>
+    </p>
+    <form [formGroup]="profileForm" (ngSubmit)="saveProfile()">
+      <div class="form-grid">
+        <mat-form-field appearance="outline">
+          <mat-label>First Name</mat-label>
+          <input matInput formControlName="firstName" />
+        </mat-form-field>
+        <mat-form-field appearance="outline">
+          <mat-label>Last Name</mat-label>
+          <input matInput formControlName="lastName" />
+        </mat-form-field>
+      </div>
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Email</mat-label>
+        <input matInput formControlName="email" type="email" />
+      </mat-form-field>
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Phone Number</mat-label>
+        <input matInput formControlName="phoneNumber" />
+      </mat-form-field>
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Address</mat-label>
+        <input matInput formControlName="address" />
+      </mat-form-field>
+      <button mat-raised-button color="primary" type="submit">
+        <mat-icon>save</mat-icon> Save Changes
+      </button>
+    </form>
+  </mat-card>
+
+  <mat-card appearance="outlined" class="card-pad">
+    <h2 style="margin-top: 0">Change Password</h2>
+    <form [formGroup]="passwordForm" (ngSubmit)="changePassword()">
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Current Password</mat-label>
+        <input matInput type="password" formControlName="currentPassword" />
+      </mat-form-field>
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>New Password</mat-label>
+        <input matInput type="password" formControlName="newPassword" />
+        @if (passwordForm.controls.newPassword.hasError('minlength')) {
+          <mat-error>Must be at least 6 characters</mat-error>
+        }
+      </mat-form-field>
+      <button mat-raised-button color="primary" type="submit">
+        <mat-icon>lock_reset</mat-icon> Update Password
+      </button>
+    </form>
+  </mat-card>
+</div>

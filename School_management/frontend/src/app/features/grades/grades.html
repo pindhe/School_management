@@ -1,0 +1,111 @@
+<div class="page-header">
+  <div>
+    <h1>Grades</h1>
+    <p>
+      @if (isStaff()) { Record grades and review student performance. }
+      @else if (isParent()) { Review your children's grades. }
+      @else { Review your grades across all subjects. }
+    </p>
+  </div>
+  @if (!isStaff() && grades().length) {
+    <div class="status-chip status-PRESENT" style="font-size: 0.9rem; padding: 8px 16px">
+      Average: {{ average() }}%
+    </div>
+  }
+</div>
+
+@if (isStaff()) {
+  <mat-card appearance="outlined" class="card-pad" style="margin-bottom: 16px">
+    <h3 style="margin-top: 0">Record a Grade</h3>
+    <form [formGroup]="form" (ngSubmit)="record()" class="form-grid">
+      <mat-form-field appearance="outline">
+        <mat-label>Student</mat-label>
+        <mat-select formControlName="studentId">
+          @for (s of students(); track s.id) { <mat-option [value]="s.id">{{ s.user.fullName }}</mat-option> }
+        </mat-select>
+      </mat-form-field>
+      <mat-form-field appearance="outline">
+        <mat-label>Subject</mat-label>
+        <mat-select formControlName="subjectId">
+          @for (s of subjects(); track s.id) { <mat-option [value]="s.id">{{ s.name }}</mat-option> }
+        </mat-select>
+      </mat-form-field>
+      <mat-form-field appearance="outline">
+        <mat-label>Academic Year</mat-label>
+        <mat-select formControlName="academicYearId">
+          @for (y of years(); track y.id) { <mat-option [value]="y.id">{{ y.name }}</mat-option> }
+        </mat-select>
+      </mat-form-field>
+      <mat-form-field appearance="outline">
+        <mat-label>Type</mat-label>
+        <mat-select formControlName="gradeType">
+          @for (t of gradeTypes; track t) { <mat-option [value]="t">{{ t }}</mat-option> }
+        </mat-select>
+      </mat-form-field>
+      <mat-form-field appearance="outline"><mat-label>Score</mat-label><input matInput type="number" formControlName="score" /></mat-form-field>
+      <mat-form-field appearance="outline"><mat-label>Max Score</mat-label><input matInput type="number" formControlName="maxScore" /></mat-form-field>
+      <mat-form-field appearance="outline" class="full-width" style="grid-column: 1 / -1"><mat-label>Remarks</mat-label><input matInput formControlName="remarks" /></mat-form-field>
+      <div style="grid-column: 1 / -1"><button mat-raised-button color="primary" type="submit">Record Grade</button></div>
+    </form>
+  </mat-card>
+
+  <mat-card appearance="outlined" class="card-pad">
+    <div class="toolbar-row">
+      <mat-form-field appearance="outline" style="min-width: 240px">
+        <mat-label>View grades for student</mat-label>
+        <mat-select [(ngModel)]="viewStudentIdModel">
+          @for (s of students(); track s.id) { <mat-option [value]="s.id">{{ s.user.fullName }}</mat-option> }
+        </mat-select>
+      </mat-form-field>
+    </div>
+    <ng-container *ngTemplateOutlet="gradeTable"></ng-container>
+  </mat-card>
+}
+
+@if (isParent()) {
+  <mat-card appearance="outlined" class="card-pad" style="margin-bottom: 16px">
+    <div class="toolbar-row">
+      @for (child of children(); track child.id) {
+        <button mat-stroked-button color="primary" (click)="viewChild(child.id)">
+          <mat-icon>child_care</mat-icon> {{ child.user.fullName }}
+        </button>
+      } @empty { <span style="opacity: 0.6">No linked children found.</span> }
+    </div>
+  </mat-card>
+}
+
+@if (!isStaff()) {
+  <mat-card appearance="outlined" class="card-pad">
+    <ng-container *ngTemplateOutlet="gradeTable"></ng-container>
+  </mat-card>
+}
+
+<ng-template #gradeTable>
+  @if (grades().length) {
+    <div class="table-wrapper">
+      <table class="data-table">
+        <thead>
+          <tr><th>Subject</th><th>Type</th><th>Score</th><th>%</th><th>Grade</th><th>Remarks</th><th>Date</th>@if (isStaff()) { <th></th> }</tr>
+        </thead>
+        <tbody>
+          @for (g of grades(); track g.id) {
+            <tr>
+              <td>{{ g.subjectName }}</td>
+              <td>{{ g.gradeType }}</td>
+              <td>{{ g.score }} / {{ g.maxScore }}</td>
+              <td>{{ g.percentage }}%</td>
+              <td><strong>{{ g.letterGrade }}</strong></td>
+              <td>{{ g.remarks || '—' }}</td>
+              <td>{{ g.gradeDate | date: 'mediumDate' }}</td>
+              @if (isStaff()) {
+                <td><button mat-icon-button color="warn" (click)="deleteGrade(g.id)"><mat-icon>delete</mat-icon></button></td>
+              }
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  } @else {
+    <div class="empty-state"><mat-icon>grade</mat-icon><p>No grades to show.</p></div>
+  }
+</ng-template>

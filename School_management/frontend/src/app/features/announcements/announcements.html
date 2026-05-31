@@ -1,0 +1,78 @@
+<div class="page-header">
+  <div>
+    <h1>Announcements</h1>
+    <p>Stay up to date with school-wide and role-specific news.</p>
+  </div>
+  @if (canPublish()) {
+    <button mat-raised-button color="primary" (click)="toggleForm()">
+      <mat-icon>{{ showForm() ? 'close' : 'add' }}</mat-icon>
+      {{ showForm() ? 'Cancel' : 'New Announcement' }}
+    </button>
+  }
+</div>
+
+@if (showForm()) {
+  <mat-card appearance="outlined" class="card-pad" style="margin-bottom: 20px">
+    <form [formGroup]="form" (ngSubmit)="submit()">
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Title</mat-label>
+        <input matInput formControlName="title" />
+      </mat-form-field>
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Content</mat-label>
+        <textarea matInput rows="3" formControlName="content"></textarea>
+      </mat-form-field>
+      <div class="form-grid">
+        <mat-form-field appearance="outline">
+          <mat-label>Audience</mat-label>
+          <mat-select formControlName="targetRole">
+            @for (role of targetRoles; track role) {
+              <mat-option [value]="role">{{ role }}</mat-option>
+            }
+          </mat-select>
+        </mat-form-field>
+        <mat-form-field appearance="outline">
+          <mat-label>Target Class (optional)</mat-label>
+          <mat-select formControlName="targetClassId">
+            <mat-option [value]="null">None</mat-option>
+            @for (c of classes(); track c.id) {
+              <mat-option [value]="c.id">{{ c.name }}</mat-option>
+            }
+          </mat-select>
+        </mat-form-field>
+      </div>
+      <button mat-raised-button color="primary" type="submit">Publish</button>
+    </form>
+  </mat-card>
+}
+
+@if (announcements().length === 0) {
+  <div class="empty-state">
+    <mat-icon>campaign</mat-icon>
+    <p>No announcements to show.</p>
+  </div>
+} @else {
+  @for (item of announcements(); track item.id) {
+    <mat-card appearance="outlined" class="card-pad" style="margin-bottom: 12px">
+      <div style="display: flex; justify-content: space-between; gap: 12px; align-items: flex-start">
+        <div>
+          <h3 style="margin: 0 0 4px">{{ item.title }}</h3>
+          <span class="status-chip" style="background: var(--mat-sys-secondary-container)">
+            {{ item.targetRole }}@if (item.targetClassName) {
+              &middot; {{ item.targetClassName }}
+            }
+          </span>
+        </div>
+        @if (isAdmin()) {
+          <button mat-icon-button color="warn" (click)="remove(item)" aria-label="Remove">
+            <mat-icon>delete</mat-icon>
+          </button>
+        }
+      </div>
+      <p style="margin: 10px 0 8px; white-space: pre-wrap">{{ item.content }}</p>
+      <span style="font-size: 0.78rem; opacity: 0.6">
+        {{ item.publishedByName }} &middot; {{ item.publishDate | date: 'medium' }}
+      </span>
+    </mat-card>
+  }
+}

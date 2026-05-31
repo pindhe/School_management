@@ -1,0 +1,102 @@
+<div class="page-header">
+  <div>
+    <h1>Attendance</h1>
+    <p>
+      @if (isStaff()) { Mark and review daily attendance for your classes. }
+      @else if (isParent()) { Review your children's attendance records. }
+      @else { Review your attendance history. }
+    </p>
+  </div>
+</div>
+
+@if (isStaff()) {
+  <mat-card appearance="outlined" class="card-pad" style="margin-bottom: 16px">
+    <div class="toolbar-row">
+      <mat-form-field appearance="outline" style="min-width: 200px">
+        <mat-label>Class</mat-label>
+        <mat-select [(ngModel)]="selectedClassIdModel">
+          @for (c of classes(); track c.id) { <mat-option [value]="c.id">{{ c.name }}</mat-option> }
+        </mat-select>
+      </mat-form-field>
+      <mat-form-field appearance="outline">
+        <mat-label>Date</mat-label>
+        <input matInput type="date" [(ngModel)]="selectedDateModel" />
+      </mat-form-field>
+      <button mat-raised-button color="primary" (click)="loadRoster()" [disabled]="!selectedClassId()">
+        <mat-icon>groups</mat-icon> Load Roster
+      </button>
+    </div>
+
+    @if (rows().length) {
+      <div class="table-wrapper">
+        <table class="data-table">
+          <thead><tr><th>Student</th><th style="width: 160px">Status</th><th>Remarks</th></tr></thead>
+          <tbody>
+            @for (row of rows(); track row.studentId) {
+              <tr>
+                <td>{{ row.name }}</td>
+                <td>
+                  <mat-form-field appearance="outline" subscriptSizing="dynamic" style="width: 140px">
+                    <mat-select [(ngModel)]="row.status">
+                      @for (s of statuses; track s) { <mat-option [value]="s">{{ s }}</mat-option> }
+                    </mat-select>
+                  </mat-form-field>
+                </td>
+                <td>
+                  <mat-form-field appearance="outline" subscriptSizing="dynamic" class="full-width">
+                    <input matInput [(ngModel)]="row.remarks" placeholder="Optional" />
+                  </mat-form-field>
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+      <div style="margin-top: 16px">
+        <button mat-raised-button color="primary" (click)="save()">
+          <mat-icon>save</mat-icon> Save Attendance
+        </button>
+      </div>
+    } @else {
+      <div class="empty-state"><mat-icon>fact_check</mat-icon><p>Select a class and date, then load the roster.</p></div>
+    }
+  </mat-card>
+}
+
+@if (isParent()) {
+  <mat-card appearance="outlined" class="card-pad" style="margin-bottom: 16px">
+    <div class="toolbar-row">
+      @for (child of children(); track child.id) {
+        <button mat-stroked-button color="primary" (click)="viewChild(child.id)">
+          <mat-icon>child_care</mat-icon> {{ child.user.fullName }}
+        </button>
+      } @empty {
+        <span style="opacity: 0.6">No linked children found.</span>
+      }
+    </div>
+  </mat-card>
+}
+
+@if (!isStaff()) {
+  @if (records().length) {
+    <mat-card appearance="outlined" class="card-pad">
+      <div class="table-wrapper">
+        <table class="data-table">
+          <thead><tr><th>Date</th><th>Status</th><th>Remarks</th><th>Recorded By</th></tr></thead>
+          <tbody>
+            @for (r of records(); track r.id) {
+              <tr>
+                <td>{{ r.date | date: 'mediumDate' }}</td>
+                <td><span class="status-chip status-{{ r.status }}">{{ r.status }}</span></td>
+                <td>{{ r.remarks || '—' }}</td>
+                <td>{{ r.recordedByTeacherName || '—' }}</td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    </mat-card>
+  } @else {
+    <div class="empty-state"><mat-icon>event_busy</mat-icon><p>No attendance records to show.</p></div>
+  }
+}

@@ -1,0 +1,202 @@
+<div class="page-header">
+  <div>
+    <h1>User Management</h1>
+    <p>Create and manage teachers, students and parents.</p>
+  </div>
+</div>
+
+<mat-card appearance="outlined">
+  <mat-tab-group>
+    <!-- Teachers -->
+    <mat-tab label="Teachers">
+      <div class="card-pad">
+        <div class="toolbar-row">
+          <span class="spacer"></span>
+          <button mat-raised-button color="primary" (click)="showTeacherForm.set(!showTeacherForm())">
+            <mat-icon>{{ showTeacherForm() ? 'close' : 'person_add' }}</mat-icon>
+            {{ showTeacherForm() ? 'Cancel' : 'Add Teacher' }}
+          </button>
+        </div>
+
+        @if (showTeacherForm()) {
+          <form [formGroup]="teacherForm" (ngSubmit)="createTeacher()" class="form-grid" style="margin-bottom: 16px">
+            <mat-form-field appearance="outline"><mat-label>First Name</mat-label><input matInput formControlName="firstName" /></mat-form-field>
+            <mat-form-field appearance="outline"><mat-label>Last Name</mat-label><input matInput formControlName="lastName" /></mat-form-field>
+            <mat-form-field appearance="outline"><mat-label>Email</mat-label><input matInput formControlName="email" /></mat-form-field>
+            <mat-form-field appearance="outline"><mat-label>Username</mat-label><input matInput formControlName="username" /></mat-form-field>
+            <mat-form-field appearance="outline"><mat-label>Password (optional)</mat-label><input matInput formControlName="password" /></mat-form-field>
+            <mat-form-field appearance="outline"><mat-label>Employee ID</mat-label><input matInput formControlName="employeeId" /></mat-form-field>
+            <mat-form-field appearance="outline"><mat-label>Department</mat-label><input matInput formControlName="department" /></mat-form-field>
+            <mat-form-field appearance="outline"><mat-label>Phone</mat-label><input matInput formControlName="phoneNumber" /></mat-form-field>
+            <div style="grid-column: 1 / -1"><button mat-raised-button color="primary" type="submit">Create Teacher</button></div>
+          </form>
+        }
+
+        <div class="table-wrapper">
+          <table class="data-table mat-elevation-z0">
+            <thead><tr><th>Name</th><th>Employee ID</th><th>Department</th><th>Email</th><th>Status</th><th></th></tr></thead>
+            <tbody>
+              @for (t of teachers(); track t.id) {
+                <tr>
+                  <td>{{ t.user.fullName }}</td>
+                  <td>{{ t.employeeId }}</td>
+                  <td>{{ t.department || '—' }}</td>
+                  <td>{{ t.user.email }}</td>
+                  <td><span class="status-chip" [class.status-PRESENT]="t.user.active" [class.status-ABSENT]="!t.user.active">{{ t.user.active ? 'Active' : 'Inactive' }}</span></td>
+                  <td><button mat-button (click)="toggleActive(t.user.id, t.user.active)">{{ t.user.active ? 'Deactivate' : 'Activate' }}</button></td>
+                </tr>
+              } @empty {
+                <tr><td colspan="6" style="text-align: center; opacity: 0.6; padding: 24px">No teachers yet.</td></tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </mat-tab>
+
+    <!-- Students -->
+    <mat-tab label="Students">
+      <div class="card-pad">
+        <div class="toolbar-row">
+          <span class="spacer"></span>
+          <button mat-raised-button color="primary" (click)="showStudentForm.set(!showStudentForm())">
+            <mat-icon>{{ showStudentForm() ? 'close' : 'person_add' }}</mat-icon>
+            {{ showStudentForm() ? 'Cancel' : 'Add Student' }}
+          </button>
+        </div>
+
+        @if (showStudentForm()) {
+          <form [formGroup]="studentForm" (ngSubmit)="createStudent()" class="form-grid" style="margin-bottom: 16px">
+            <mat-form-field appearance="outline"><mat-label>First Name</mat-label><input matInput formControlName="firstName" /></mat-form-field>
+            <mat-form-field appearance="outline"><mat-label>Last Name</mat-label><input matInput formControlName="lastName" /></mat-form-field>
+            <mat-form-field appearance="outline"><mat-label>Email</mat-label><input matInput formControlName="email" /></mat-form-field>
+            <mat-form-field appearance="outline"><mat-label>Username</mat-label><input matInput formControlName="username" /></mat-form-field>
+            <mat-form-field appearance="outline"><mat-label>Password (optional)</mat-label><input matInput formControlName="password" /></mat-form-field>
+            <mat-form-field appearance="outline"><mat-label>Admission No.</mat-label><input matInput formControlName="admissionNumber" /></mat-form-field>
+            <mat-form-field appearance="outline">
+              <mat-label>Class</mat-label>
+              <mat-select formControlName="currentClassId">
+                <mat-option [value]="null">Unassigned</mat-option>
+                @for (c of classes(); track c.id) { <mat-option [value]="c.id">{{ c.name }}</mat-option> }
+              </mat-select>
+            </mat-form-field>
+            <mat-form-field appearance="outline"><mat-label>Phone</mat-label><input matInput formControlName="phoneNumber" /></mat-form-field>
+            <div style="grid-column: 1 / -1"><button mat-raised-button color="primary" type="submit">Create Student</button></div>
+          </form>
+        }
+
+        <div class="table-wrapper">
+          <table class="data-table">
+            <thead><tr><th>Name</th><th>Admission No.</th><th>Class</th><th>Email</th><th>Status</th><th></th></tr></thead>
+            <tbody>
+              @for (s of students(); track s.id) {
+                <tr>
+                  <td>{{ s.user.fullName }}</td>
+                  <td>{{ s.admissionNumber }}</td>
+                  <td>{{ s.currentClassName || '—' }}</td>
+                  <td>{{ s.user.email }}</td>
+                  <td><span class="status-chip" [class.status-PRESENT]="s.user.active" [class.status-ABSENT]="!s.user.active">{{ s.user.active ? 'Active' : 'Inactive' }}</span></td>
+                  <td><button mat-button (click)="toggleActive(s.user.id, s.user.active)">{{ s.user.active ? 'Deactivate' : 'Activate' }}</button></td>
+                </tr>
+              } @empty {
+                <tr><td colspan="6" style="text-align: center; opacity: 0.6; padding: 24px">No students yet.</td></tr>
+              }
+            </tbody>
+          </table>
+        </div>
+
+        <mat-card appearance="outlined" class="card-pad" style="margin-top: 16px">
+          <h3 style="margin-top: 0">Enroll Student in a Class</h3>
+          <form [formGroup]="enrollForm" (ngSubmit)="enroll()" class="form-grid">
+            <mat-form-field appearance="outline">
+              <mat-label>Student</mat-label>
+              <mat-select formControlName="studentId">
+                @for (s of students(); track s.id) { <mat-option [value]="s.id">{{ s.user.fullName }}</mat-option> }
+              </mat-select>
+            </mat-form-field>
+            <mat-form-field appearance="outline">
+              <mat-label>Class</mat-label>
+              <mat-select formControlName="classId">
+                @for (c of classes(); track c.id) { <mat-option [value]="c.id">{{ c.name }}</mat-option> }
+              </mat-select>
+            </mat-form-field>
+            <div style="grid-column: 1 / -1"><button mat-stroked-button color="primary" type="submit">Enroll</button></div>
+          </form>
+        </mat-card>
+      </div>
+    </mat-tab>
+
+    <!-- Parents -->
+    <mat-tab label="Parents">
+      <div class="card-pad">
+        <div class="toolbar-row">
+          <span class="spacer"></span>
+          <button mat-raised-button color="primary" (click)="showParentForm.set(!showParentForm())">
+            <mat-icon>{{ showParentForm() ? 'close' : 'person_add' }}</mat-icon>
+            {{ showParentForm() ? 'Cancel' : 'Add Parent' }}
+          </button>
+        </div>
+
+        @if (showParentForm()) {
+          <form [formGroup]="parentForm" (ngSubmit)="createParent()" class="form-grid" style="margin-bottom: 16px">
+            <mat-form-field appearance="outline"><mat-label>First Name</mat-label><input matInput formControlName="firstName" /></mat-form-field>
+            <mat-form-field appearance="outline"><mat-label>Last Name</mat-label><input matInput formControlName="lastName" /></mat-form-field>
+            <mat-form-field appearance="outline"><mat-label>Email</mat-label><input matInput formControlName="email" /></mat-form-field>
+            <mat-form-field appearance="outline"><mat-label>Username</mat-label><input matInput formControlName="username" /></mat-form-field>
+            <mat-form-field appearance="outline"><mat-label>Password (optional)</mat-label><input matInput formControlName="password" /></mat-form-field>
+            <mat-form-field appearance="outline"><mat-label>Phone</mat-label><input matInput formControlName="phoneNumber" /></mat-form-field>
+            <div style="grid-column: 1 / -1"><button mat-raised-button color="primary" type="submit">Create Parent</button></div>
+          </form>
+        }
+
+        <div class="table-wrapper">
+          <table class="data-table">
+            <thead><tr><th>Name</th><th>Email</th><th>Children</th></tr></thead>
+            <tbody>
+              @for (p of parents(); track p.id) {
+                <tr>
+                  <td>{{ p.user.fullName }}</td>
+                  <td>{{ p.user.email }}</td>
+                  <td>
+                    @if (p.children.length) {
+                      {{ p.children.length }} ({{ p.children[0].user.fullName }}@if (p.children.length > 1) { +{{ p.children.length - 1 }} })
+                    } @else { — }
+                  </td>
+                </tr>
+              } @empty {
+                <tr><td colspan="3" style="text-align: center; opacity: 0.6; padding: 24px">No parents yet.</td></tr>
+              }
+            </tbody>
+          </table>
+        </div>
+
+        <mat-card appearance="outlined" class="card-pad" style="margin-top: 16px">
+          <h3 style="margin-top: 0">Link Parent to Student</h3>
+          <form [formGroup]="linkForm" (ngSubmit)="linkParent()" class="form-grid">
+            <mat-form-field appearance="outline">
+              <mat-label>Parent</mat-label>
+              <mat-select formControlName="parentId">
+                @for (p of parents(); track p.id) { <mat-option [value]="p.id">{{ p.user.fullName }}</mat-option> }
+              </mat-select>
+            </mat-form-field>
+            <mat-form-field appearance="outline">
+              <mat-label>Student</mat-label>
+              <mat-select formControlName="studentId">
+                @for (s of students(); track s.id) { <mat-option [value]="s.id">{{ s.user.fullName }}</mat-option> }
+              </mat-select>
+            </mat-form-field>
+            <mat-form-field appearance="outline">
+              <mat-label>Relationship</mat-label>
+              <mat-select formControlName="relationship">
+                <mat-option value="FATHER">Father</mat-option>
+                <mat-option value="MOTHER">Mother</mat-option>
+                <mat-option value="GUARDIAN">Guardian</mat-option>
+              </mat-select>
+            </mat-form-field>
+            <div style="grid-column: 1 / -1"><button mat-stroked-button color="primary" type="submit">Link</button></div>
+          </form>
+        </mat-card>
+      </div>
+    </mat-tab>
+  </mat-tab-group>
+</mat-card>

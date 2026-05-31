@@ -1,0 +1,79 @@
+spring:
+  application:
+    name: sms-backend
+  profiles:
+    # Default to the in-memory H2 profile so the app runs without a MySQL install.
+    # Switch to MySQL with: --spring.profiles.active=mysql
+    active: dev
+  jackson:
+    default-property-inclusion: non_null
+
+server:
+  port: ${SERVER_PORT:8081}
+
+# Application-specific settings
+app:
+  cors:
+    allowed-origins: "http://localhost:4200"
+  jwt:
+    # Base64-encoded 256-bit secret. Override in production via APP_JWT_SECRET.
+    secret: ${APP_JWT_SECRET:c2Nob29sLW1hbmFnZW1lbnQtc3lzdGVtLXN1cGVyLXNlY3JldC1rZXktY2hhbmdlLW1l}
+    # Access token validity in milliseconds (24h)
+    expiration-ms: 86400000
+  seed:
+    # Seed roles and a default admin account on startup
+    enabled: true
+    admin-username: admin
+    admin-password: Admin@123
+    admin-email: admin@school.local
+
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
+    operationsSorter: method
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+
+---
+spring:
+  config:
+    activate:
+      on-profile: dev
+  datasource:
+    url: jdbc:h2:mem:smsdb;DB_CLOSE_DELAY=-1;MODE=MySQL
+    driver-class-name: org.h2.Driver
+    username: sa
+    password: ""
+  h2:
+    console:
+      enabled: true
+      path: /h2-console
+  jpa:
+    database-platform: org.hibernate.dialect.H2Dialect
+    hibernate:
+      ddl-auto: create-drop
+    show-sql: false
+    properties:
+      hibernate.format_sql: true
+
+---
+spring:
+  config:
+    activate:
+      on-profile: mysql
+  datasource:
+    url: jdbc:mysql://${DB_HOST:localhost}:${DB_PORT:3306}/${DB_NAME:sms_db}?createDatabaseIfNotExist=true&useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    username: ${DB_USERNAME:root}
+    password: ${DB_PASSWORD:root}
+  jpa:
+    database-platform: org.hibernate.dialect.MySQLDialect
+    hibernate:
+      ddl-auto: update
+    show-sql: false
+    properties:
+      hibernate.format_sql: true
