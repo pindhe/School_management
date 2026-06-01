@@ -77,24 +77,7 @@ The system improves operational efficiency, reduces paperwork, and enables real-
 * Password encryption
 * Audit logging
 
----
 
-## 🏗️ System Architecture
-
-```text
-Frontend (Angular)
-        │
-        ▼
-REST API (Spring Boot)
-        │
-        ▼
-Business Logic Layer
-        │
-        ▼
-Database (MySQL / PostgreSQL)
-```
-
----
 
 ## 🛠️ Technology Stack
 
