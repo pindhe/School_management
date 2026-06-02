@@ -38,7 +38,7 @@ export class StudentService {
     if (path.startsWith('http')) {
       return path;
     }
-    return `http://localhost:8081${path}`;
+    return path.startsWith('/') ? path : `/${path}`;
   }
 
   private toFormData(request: StudentRequest, photo?: File | null): FormData {

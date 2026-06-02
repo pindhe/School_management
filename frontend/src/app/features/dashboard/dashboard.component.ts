@@ -1,6 +1,7 @@
 import { Component, OnInit, inject, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { DatePipe } from '@angular/common';
+import { HttpErrorResponse } from '@angular/common/http';
 import { DashboardService } from '../../core/services/dashboard.service';
 import { StudentService } from '../../core/services/student.service';
 import { AuthService } from '../../core/services/auth.service';
@@ -29,8 +30,14 @@ export class DashboardComponent implements OnInit {
         this.stats.set(data);
         this.loading.set(false);
       },
-      error: () => {
-        this.error.set('Could not load dashboard data from server.');
+      error: (err: HttpErrorResponse) => {
+        if (err.status === 401) {
+          this.error.set('Session expired. Please log out and sign in again.');
+        } else if (err.status === 0) {
+          this.error.set('Cannot reach API. Start the backend: cd backend && .\\mvnw.cmd spring-boot:run');
+        } else {
+          this.error.set(err.error?.detail ?? 'Could not load dashboard data from server.');
+        }
         this.loading.set(false);
       },
     });
