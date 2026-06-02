@@ -1,0 +1,15 @@
+.app-shell {
+  min-height: 100vh;
+  background: #f4f7fb;
+}
+
+.navbar-brand span {
+  font-size: 1.05rem;
+}
+
+@media (max-width: 991.98px) {
+  .navbar-collapse .d-flex {
+    padding-bottom: 0.75rem;
+    flex-wrap: wrap;
+  }
+}

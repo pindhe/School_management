@@ -1,0 +1,30 @@
+.avatar {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.avatar.placeholder {
+  display: grid;
+  place-items: center;
+  background: #e9ecef;
+  color: #6c757d;
+}
+
+.table-responsive {
+  border-radius: 0.75rem;
+  overflow: hidden;
+}
+
+@media (max-width: 767.98px) {
+  .table-responsive {
+    display: none;
+  }
+}
+
+@media (min-width: 768px) {
+  .student-card {
+    display: none;
+  }
+}

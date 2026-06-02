@@ -1,0 +1,61 @@
+<div class="page-header mb-4">
+  <a routerLink="/students" class="text-decoration-none small text-secondary">
+    <i class="bi bi-arrow-left"></i> Back to list
+  </a>
+  <h1 class="h3 fw-bold mt-2 mb-0">{{ isEdit ? 'Edit student' : 'Add student' }}</h1>
+</div>
+
+<div class="row justify-content-center">
+  <div class="col-12 col-lg-8">
+    <div class="card shadow-sm border-0">
+      <div class="card-body p-4">
+        @if (error()) {
+          <div class="alert alert-danger">{{ error() }}</div>
+        }
+
+        <form [formGroup]="form" (ngSubmit)="submit()">
+          <div class="row g-4">
+            <div class="col-md-4 text-center">
+              <div class="photo-preview mx-auto mb-3">
+                @if (previewUrl(); as src) {
+                  <img [src]="src" alt="Student photo preview" />
+                } @else {
+                  <i class="bi bi-camera display-6 text-secondary"></i>
+                }
+              </div>
+              <label class="btn btn-outline-secondary btn-sm">
+                Upload photo
+                <input type="file" class="d-none" accept="image/*" (change)="onPhotoSelected($event)" />
+              </label>
+            </div>
+
+            <div class="col-md-8">
+              <div class="mb-3">
+                <label class="form-label" for="name">Full name</label>
+                <input id="name" class="form-control" formControlName="name" />
+              </div>
+              <div class="mb-3">
+                <label class="form-label" for="email">Email</label>
+                <input id="email" type="email" class="form-control" formControlName="email" />
+              </div>
+              <div class="mb-3">
+                <label class="form-label" for="phone">Phone</label>
+                <input id="phone" class="form-control" formControlName="phone" />
+              </div>
+              <div class="mb-4">
+                <label class="form-label" for="address">Address</label>
+                <textarea id="address" rows="3" class="form-control" formControlName="address"></textarea>
+              </div>
+              <div class="d-flex gap-2">
+                <button class="btn btn-primary" type="submit" [disabled]="loading()">
+                  {{ isEdit ? 'Update' : 'Save' }}
+                </button>
+                <a class="btn btn-light" routerLink="/students">Cancel</a>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

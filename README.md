@@ -1,262 +1,94 @@
-# 🎓 School Management System
+# Student Registration System
 
-A modern, scalable, and secure School Management System built with **Java**, **Spring Boot**, **MySQL/PostgreSQL**, and **Angular**. The platform streamlines academic and administrative operations, providing an efficient digital environment for students, teachers, administrators, and parents.
+Professional full-stack **Student Registration System** aligned with your final project requirements: student CRUD, search, photo upload, login/registration, and **Admin** / **Guest** roles with a responsive Bootstrap UI.
 
----
+## Requirements coverage
 
-## 📖 Overview
+| Requirement | Implementation |
+|-------------|----------------|
+| `student` table: id, name, address, phone, email, photo | JPA `Student` entity + photo file storage |
+| Save / Update / Delete / Search / Display all | REST API + Angular UI |
+| Login & Registration | `/api/auth/login`, `/api/auth/register` |
+| Admin & Guest roles | `ADMIN` (full CRUD), `GUEST` (read + search) |
+| Responsive design | Bootstrap 5 (mobile cards + desktop table) |
+| Oracle database | `database/schema-oracle.sql` + `oracle` Spring profile |
 
-The School Management System is designed to automate and simplify educational institution workflows. It centralizes student records, attendance tracking, examinations, grading, fee management, and communication into a single platform.
+## Tech stack
 
-The system improves operational efficiency, reduces paperwork, and enables real-time access to academic information.
+- **Backend:** Java 21, Spring Boot 3.4, Spring Security, JWT, JPA
+- **Frontend:** Angular 19, Bootstrap 5, Bootstrap Icons
+- **Database:** H2 (default, Oracle-compatible mode) or Oracle 11g+
 
----
+## Quick start
 
-## ✨ Features
+### Prerequisites
 
-### 👨‍🎓 Student Management
+- Java 21+
+- Node.js 20+
+- Maven (or use `backend/mvnw.cmd` after wrapper is restored)
 
-* Student registration and enrollment
-* Student profiles and academic records
-* Class and section assignment
-* Student attendance tracking
-* Performance monitoring
+### 1. Backend
 
-### 👨‍🏫 Teacher Management
+```powershell
+cd backend
+.\mvnw.cmd spring-boot:run
+```
 
-* Teacher registration and profiles
-* Subject allocation
-* Class assignment
-* Attendance management
-* Performance reports
+API: `http://localhost:8080`  
+Swagger: `http://localhost:8080/swagger-ui.html`  
+H2 console: `http://localhost:8080/h2-console` (JDBC URL: `jdbc:h2:mem:studentdb`)
 
-### 📚 Academic Management
+### 2. Frontend
 
-* Course and subject management
-* Class scheduling and timetables
-* Assignment management
-* Examination scheduling
-* Grade and result processing
+```powershell
+cd frontend
+npm install
+npm start
+```
 
-### 📝 Attendance System
+App: `http://localhost:4200`
 
-* Daily attendance recording
-* Automated attendance reports
-* Student attendance analytics
-* Teacher attendance monitoring
+### Demo accounts
 
-### 💰 Fee Management
+| Role  | Username | Password  |
+|-------|----------|-----------|
+| Admin | `admin`  | `admin123` |
+| Guest | `guest`  | `guest123` |
 
-* Fee structure configuration
-* Payment tracking
-* Receipt generation
-* Outstanding balance monitoring
-* Financial reporting
+## Oracle setup
 
-### 📊 Reports & Analytics
+1. Run `database/schema-oracle.sql` in Oracle SQL Developer.
+2. Start backend with Oracle profile:
 
-* Student performance reports
-* Attendance reports
-* Financial reports
-* Teacher activity reports
-* School-wide analytics dashboard
+```powershell
+$env:DB_USERNAME="student_app"
+$env:DB_PASSWORD="student_app"
+.\mvnw.cmd spring-boot:run -Dspring-boot.run.profiles=oracle
+```
 
-### 👨‍👩‍👧 Parent Portal
+## API overview
 
-* Student progress tracking
-* Attendance monitoring
-* Examination results
-* School announcements
-* Direct communication with teachers
+```http
+POST   /api/auth/login
+POST   /api/auth/register
+GET    /api/students?q=searchTerm
+GET    /api/students/{id}
+POST   /api/students          (multipart: student JSON + photo)
+PUT    /api/students/{id}     (Admin only)
+DELETE /api/students/{id}     (Admin only)
+GET    /api/photos/{filename}
+```
 
-### 🔐 Security & Authentication
-
-* JWT Authentication
-* Role-Based Access Control (RBAC)
-* Secure API endpoints
-* Password encryption
-* Audit logging
-
-
-
-## 🛠️ Technology Stack
-
-### Backend
-
-* Java 21+
-* Spring Boot
-* Spring Security
-* Spring Data JPA
-* Hibernate
-* JWT Authentication
-* Maven
-
-### Frontend
-
-* Angular
-* TypeScript
-* RxJS
-* Angular Material
-* Bootstrap / Tailwind CSS
-
-### Database
-
-* MySQL
-* PostgreSQL
-
-### Development Tools
-
-* IntelliJ IDEA
-* VS Code
-* Postman
-* Git & GitHub
-* Docker
-
----
-
-## 📂 Project Structure
+## Project structure
 
 ```text
-school-management-system/
-│
-├── backend/
-│   ├── src/main/java/
-│   ├── src/main/resources/
-│   ├── controllers/
-│   ├── services/
-│   ├── repositories/
-│   ├── entities/
-│   └── security/
-│
-├── frontend/
-│   ├── src/
-│   ├── app/
-│   ├── components/
-│   ├── services/
-│   ├── models/
-│   └── guards/
-│
-├── database/
-│   ├── schema.sql
-│   └── seed-data.sql
-│
-├── docs/
-│
-├── docker/
-│
-├── README.md
-│
-└── LICENSE
+School_management/
+├── backend/          # Spring Boot API
+├── frontend/         # Angular SPA
+├── database/         # Oracle DDL
+└── README.md
 ```
 
+## License
 
-## 🔑 User Roles
-
-### Administrator
-
-* Manage users
-* Manage classes
-* Manage teachers
-* Manage students
-* Generate reports
-
-### Teacher
-
-* Mark attendance
-* Upload grades
-* Manage assignments
-* View student records
-
-### Student
-
-* View timetable
-* Access assignments
-* View grades
-* Track attendance
-
-### Parent
-
-* Monitor student progress
-* View attendance reports
-* Access examination results
-
----
-
-## 📡 REST API Modules
-
-### Authentication
-
-```http
-POST /api/auth/login
-POST /api/auth/register
-```
-
-### Students
-
-```http
-GET    /api/students
-POST   /api/students
-PUT    /api/students/{id}
-DELETE /api/students/{id}
-```
-
-### Teachers
-
-```http
-GET    /api/teachers
-POST   /api/teachers
-PUT    /api/teachers/{id}
-DELETE /api/teachers/{id}
-```
-
-### Attendance
-
-```http
-GET  /api/attendance
-POST /api/attendance
-```
-
-### Results
-
-```http
-GET  /api/results
-POST /api/results
-```
-
----
-
-## 📈 Future Enhancements
-
-* Mobile Application
-* AI-powered Performance Analytics
-* SMS Notifications
-* Email Notifications
-* Online Learning Module
-* Video Class Integration
-* Online Examination System
-* Multi-School Support
-* Cloud Deployment
-
----
-
-## 🤝 Contributing
-
-Contributions are welcome.
-
-1. Fork the repository
-2. Create a feature branch
-3. Commit your changes
-4. Push to your branch
-5. Open a Pull Request
-
----
-
-## 📄 License
-
-This project is licensed under the MIT License.
-
----
-
-## 🌟 Acknowledgements
-
-Special thanks to all educators, developers, and contributors who support digital transformation in education through innovative technology solutions.
+MIT

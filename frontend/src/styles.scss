@@ -1,0 +1,27 @@
+@import 'bootstrap/scss/bootstrap';
+@import 'bootstrap-icons/font/bootstrap-icons.css';
+
+:root {
+  --bs-primary: #0d6efd;
+  --bs-primary-rgb: 13, 110, 253;
+  --bs-body-font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+}
+
+body {
+  background: #f4f7fb;
+  color: #1f2937;
+}
+
+.card {
+  border-radius: 0.85rem;
+}
+
+.btn,
+.form-control,
+.input-group-text {
+  border-radius: 0.65rem;
+}
+
+.page-header h1 {
+  letter-spacing: -0.02em;
+}
