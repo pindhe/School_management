@@ -45,11 +45,20 @@ After login, a **sidebar layout** provides:
 ### 1. Backend
 
 ```powershell
+$env:JAVA_HOME="C:\Program Files\Eclipse Adoptium\jdk-17.0.15.6-hotspot"
 cd backend
 .\mvnw.cmd spring-boot:run
 ```
 
-API: `http://localhost:8080`  
+If port 8080 is busy:
+
+```powershell
+.\mvnw.cmd spring-boot:run "-Dspring-boot.run.arguments=--server.port=8082"
+```
+
+Then set the same port in `frontend/proxy.conf.json`.
+
+API: `http://localhost:8080` (or your chosen port)  
 Swagger: `http://localhost:8080/swagger-ui.html`  
 H2 console: `http://localhost:8080/h2-console` (JDBC URL: `jdbc:h2:mem:studentdb`)
 
@@ -61,7 +70,9 @@ npm install
 npm start
 ```
 
-App: `http://localhost:4200`
+App: `http://localhost:4200` — API calls are proxied to the backend via `proxy.conf.json` (default target: `http://localhost:8082`).
+
+If the backend runs on another port, edit `frontend/proxy.conf.json` and restart `npm start`.
 
 ### Demo accounts
 
