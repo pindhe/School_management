@@ -2,6 +2,21 @@
 
 Professional full-stack **Student Registration System** aligned with your final project requirements: student CRUD, search, photo upload, login/registration, and **Admin** / **Guest** roles with a responsive Bootstrap UI.
 
+## Admin interface
+
+After login, a **sidebar layout** provides:
+
+| Page | Admin | Guest |
+|------|-------|-------|
+| Dashboard | Yes | Yes |
+| Students | Full CRUD | View + search |
+| Add Student | Yes | — |
+| Reports | Yes | — |
+| Users | Yes | — |
+| Profile | Yes | Yes |
+| Settings | Yes | Yes |
+| Help | Yes | Yes |
+
 ## Requirements coverage
 
 | Requirement | Implementation |

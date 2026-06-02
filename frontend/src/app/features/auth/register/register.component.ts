@@ -32,7 +32,7 @@ export class RegisterComponent {
     this.loading.set(true);
     this.error.set(null);
     this.auth.register({ ...this.form.getRawValue(), role: 'GUEST' }).subscribe({
-      next: () => this.router.navigate(['/students']),
+      next: () => this.router.navigate(['/dashboard']),
       error: (err) => {
         this.error.set(err?.error?.detail ?? 'Registration failed.');
         this.loading.set(false);

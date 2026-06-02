@@ -1,14 +1,11 @@
-<div class="page-header d-flex flex-column flex-md-row align-items-md-center justify-content-between gap-3 mb-4">
-  <div>
-    <h1 class="h3 fw-bold mb-1">Students</h1>
-    <p class="text-secondary mb-0">
-      @if (auth.isAdmin()) {
-        Full access: create, update, delete, and search records.
-      } @else {
-        Guest access: view and search student records.
-      }
-    </p>
-  </div>
+<div class="d-flex flex-column flex-md-row align-items-md-center justify-content-between gap-3 mb-4">
+  <p class="text-secondary mb-0">
+    @if (auth.isAdmin()) {
+      Search, edit, and delete student records.
+    } @else {
+      View and search student records (read-only).
+    }
+  </p>
   @if (auth.isAdmin()) {
     <a class="btn btn-primary" routerLink="/students/new">
       <i class="bi bi-plus-lg me-1"></i> Add student

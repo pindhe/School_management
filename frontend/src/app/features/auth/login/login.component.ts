@@ -31,7 +31,7 @@ export class LoginComponent {
     this.loading.set(true);
     this.error.set(null);
     this.auth.login(this.form.getRawValue()).subscribe({
-      next: () => this.router.navigate(['/students']),
+      next: () => this.router.navigate(['/dashboard']),
       error: (err) => {
         this.error.set(err?.error?.detail ?? 'Login failed. Check your credentials.');
         this.loading.set(false);
