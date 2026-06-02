@@ -70,10 +70,20 @@ App: `http://localhost:4200`
 | Admin | `admin`  | `admin123` |
 | Guest | `guest`  | `guest123` |
 
+## Database (2 tables)
+
+| Table | Purpose |
+|-------|---------|
+| `STUDENT` | Assignment data: id, name, address, phone, email, photo |
+| `APP_USER` | Login / register with `ADMIN` or `GUEST` role |
+
+See `database/schema-oracle.sql`. Optional sample students: `database/seed-oracle.sql`.
+
 ## Oracle setup
 
 1. Run `database/schema-oracle.sql` in Oracle SQL Developer.
-2. Start backend with Oracle profile:
+2. (Optional) Run `database/seed-oracle.sql` for sample students.
+3. Start backend with Oracle profile (creates demo users `admin` / `guest` if tables are empty):
 
 ```powershell
 $env:DB_USERNAME="student_app"
