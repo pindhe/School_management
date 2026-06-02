@@ -5,6 +5,8 @@ import com.school.registration.domain.entity.Student;
 import com.school.registration.domain.enums.RoleName;
 import com.school.registration.repository.AppUserRepository;
 import com.school.registration.repository.StudentRepository;
+import com.school.registration.repository.UserSettingsRepository;
+import com.school.registration.service.SettingsService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -16,26 +18,36 @@ public class DataSeeder implements CommandLineRunner {
 
     private final AppUserRepository appUserRepository;
     private final StudentRepository studentRepository;
+    private final UserSettingsRepository userSettingsRepository;
+    private final SettingsService settingsService;
     private final PasswordEncoder passwordEncoder;
 
     @Override
     public void run(String... args) {
         if (appUserRepository.count() == 0) {
-            appUserRepository.save(AppUser.builder()
+            AppUser admin = appUserRepository.save(AppUser.builder()
                     .username("admin")
                     .email("admin@school.local")
                     .password(passwordEncoder.encode("admin123"))
                     .role(RoleName.ADMIN)
                     .enabled(true)
                     .build());
+            settingsService.createDefaultSettings(admin);
 
-            appUserRepository.save(AppUser.builder()
+            AppUser guest = appUserRepository.save(AppUser.builder()
                     .username("guest")
                     .email("guest@school.local")
                     .password(passwordEncoder.encode("guest123"))
                     .role(RoleName.GUEST)
                     .enabled(true)
                     .build());
+            settingsService.createDefaultSettings(guest);
+        } else {
+            appUserRepository.findAll().forEach(user -> {
+                if (userSettingsRepository.findByUserId(user.getId()).isEmpty()) {
+                    settingsService.createDefaultSettings(user);
+                }
+            });
         }
 
         if (studentRepository.count() == 0) {

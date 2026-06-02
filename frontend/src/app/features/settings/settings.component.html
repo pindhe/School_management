@@ -1,19 +1,36 @@
-<p class="text-secondary mb-4">Application preferences stored in your browser.</p>
+@if (loading()) {
+  <div class="text-center py-5"><div class="spinner-border text-primary"></div></div>
+} @else {
+  <p class="text-secondary mb-4">Preferences stored in the <strong>user_settings</strong> database table.</p>
 
-<div class="card border-0 shadow-sm col-lg-8">
-  <div class="card-body p-4">
-    @if (saved()) {
-      <div class="alert alert-success py-2">Settings saved.</div>
-    }
+  <div class="card border-0 shadow-sm col-lg-8">
+    <div class="card-body p-4">
+      @if (error()) {
+        <div class="alert alert-danger py-2">{{ error() }}</div>
+      }
+      @if (saved()) {
+        <div class="alert alert-success py-2">Settings saved to database.</div>
+      }
 
-    <div class="form-check form-switch mb-3">
-      <input class="form-check-input" type="checkbox" id="compact" [(ngModel)]="compactTables" />
-      <label class="form-check-label" for="compact">Compact table layout</label>
+      <div class="form-check form-switch mb-3">
+        <input class="form-check-input" type="checkbox" id="compact" [(ngModel)]="compactTables" />
+        <label class="form-check-label" for="compact">Compact table layout</label>
+      </div>
+      <div class="form-check form-switch mb-4">
+        <input class="form-check-input" type="checkbox" id="email" [(ngModel)]="emailNotifications" />
+        <label class="form-check-label" for="email">Email notifications</label>
+      </div>
+
+      @if (lastUpdated) {
+        <p class="small text-secondary mb-3">Last updated: {{ lastUpdated | date: 'medium' }}</p>
+      }
+
+      <button type="button" class="btn btn-primary" [disabled]="saving()" (click)="save()">
+        @if (saving()) {
+          <span class="spinner-border spinner-border-sm me-1"></span>
+        }
+        Save to database
+      </button>
     </div>
-    <div class="form-check form-switch mb-4">
-      <input class="form-check-input" type="checkbox" id="email" [(ngModel)]="emailNotifications" />
-      <label class="form-check-label" for="email">Email notifications (demo)</label>
-    </div>
-    <button type="button" class="btn btn-primary" (click)="save()">Save settings</button>
   </div>
-</div>
+}

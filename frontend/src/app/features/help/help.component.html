@@ -4,22 +4,46 @@
       <div class="card-body p-4">
         <h2 class="h5 fw-bold">How to use the admin panel</h2>
         <ol class="text-secondary mb-0">
-          <li class="mb-2"><strong>Dashboard</strong> — overview and quick actions.</li>
-          <li class="mb-2"><strong>Students</strong> — search, view, edit, or delete records (Admin).</li>
-          <li class="mb-2"><strong>Reports</strong> — registration statistics (Admin).</li>
-          <li class="mb-2"><strong>Users</strong> — view Admin and Guest accounts (Admin).</li>
-          <li><strong>Profile / Settings</strong> — your account and preferences.</li>
+          <li class="mb-2"><strong>Dashboard</strong> — live counts from database.</li>
+          <li class="mb-2"><strong>Students</strong> — CRUD on <code>student</code> table.</li>
+          <li class="mb-2"><strong>Reports</strong> — analytics from DB (Admin).</li>
+          <li class="mb-2"><strong>Users</strong> — list from <code>app_user</code> table (Admin).</li>
+          <li class="mb-2"><strong>Settings</strong> — saved in <code>user_settings</code> table.</li>
+          <li><strong>Profile</strong> — your account from database.</li>
         </ol>
       </div>
     </div>
   </div>
   <div class="col-lg-4">
     <div class="card border-0 shadow-sm">
+      <div class="card-header bg-white border-0">
+        <h3 class="h6 fw-bold mb-0">System status (live)</h3>
+      </div>
+      <div class="card-body">
+        @if (loading()) {
+          <div class="spinner-border spinner-border-sm text-primary"></div>
+        } @else if (info()) {
+          <ul class="list-unstyled small mb-0">
+            <li class="mb-2"><span class="text-secondary">App</span><br /><strong>{{ info()!.applicationName }}</strong></li>
+            <li class="mb-2"><span class="text-secondary">Version</span><br />{{ info()!.version }}</li>
+            <li class="mb-2">
+              <span class="text-secondary">Database</span><br />
+              <span class="badge text-bg-success">{{ info()!.databaseStatus }}</span>
+            </li>
+            <li class="mb-2">Students: <strong>{{ info()!.totalStudents }}</strong></li>
+            <li class="mb-2">Users: <strong>{{ info()!.totalUsers }}</strong> ({{ info()!.adminUsers }} admin, {{ info()!.guestUsers }} guest)</li>
+          </ul>
+        } @else {
+          <p class="text-secondary small mb-0">Could not reach API.</p>
+        }
+      </div>
+    </div>
+    <div class="card border-0 shadow-sm mt-3">
       <div class="card-body">
         <h3 class="h6 fw-bold">Demo accounts</h3>
         <p class="small text-secondary mb-2">Admin: <code>admin</code> / <code>admin123</code></p>
         <p class="small text-secondary mb-3">Guest: <code>guest</code> / <code>guest123</code></p>
-        <a routerLink="/login" class="btn btn-sm btn-outline-primary">Back to login</a>
+        <a routerLink="/login" class="btn btn-sm btn-outline-primary">Login page</a>
       </div>
     </div>
   </div>

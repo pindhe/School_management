@@ -3,6 +3,7 @@ import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { StudentService } from '../../../core/services/student.service';
+import { SettingsService } from '../../../core/services/settings.service';
 import { AuthService } from '../../../core/services/auth.service';
 import { Student } from '../../../core/models/student.model';
 
@@ -16,6 +17,7 @@ import { Student } from '../../../core/models/student.model';
 export class StudentListComponent implements OnInit {
   private readonly studentService = inject(StudentService);
   readonly auth = inject(AuthService);
+  readonly settingsService = inject(SettingsService);
 
   readonly students = signal<Student[]>([]);
   readonly loading = signal(true);

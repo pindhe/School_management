@@ -1,9 +1,11 @@
 import { Injectable, signal, computed } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
+import { Observable } from 'rxjs';
 import { tap } from 'rxjs/operators';
 import { environment } from '../../../environments/environment';
 import { AuthResponse, LoginRequest, RegisterRequest, RoleName } from '../models/auth.model';
+import { Profile } from '../models/profile.model';
 
 const TOKEN_KEY = 'srs_token';
 const USER_KEY = 'srs_user';
@@ -48,6 +50,10 @@ export class AuthService {
 
   hasRole(role: RoleName): boolean {
     return this.currentUser()?.role === role;
+  }
+
+  getProfile(): Observable<Profile> {
+    return this.http.get<Profile>(`${this.api}/me`);
   }
 
   private persistSession(response: AuthResponse): void {

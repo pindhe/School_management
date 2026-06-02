@@ -70,12 +70,25 @@ App: `http://localhost:4200`
 | Admin | `admin`  | `admin123` |
 | Guest | `guest`  | `guest123` |
 
-## Database (2 tables)
+## Database (3 tables)
 
 | Table | Purpose |
 |-------|---------|
 | `STUDENT` | Assignment data: id, name, address, phone, email, photo |
 | `APP_USER` | Login / register with `ADMIN` or `GUEST` role |
+| `USER_SETTINGS` | Per-user preferences (Settings page) |
+
+## Live API (dynamic pages)
+
+| Page | API |
+|------|-----|
+| Dashboard | `GET /api/dashboard/stats` |
+| Students | `GET/POST/PUT/DELETE /api/students` |
+| Reports | `GET /api/reports/summary` |
+| Users | `GET /api/users` |
+| Profile | `GET /api/auth/me` |
+| Settings | `GET/PUT /api/settings/me` |
+| Help | `GET /api/system/info` |
 
 See `database/schema-oracle.sql`. Optional sample students: `database/seed-oracle.sql`.
 

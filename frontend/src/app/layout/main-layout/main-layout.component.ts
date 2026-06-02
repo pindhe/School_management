@@ -1,6 +1,7 @@
-import { Component, computed, inject, signal } from '@angular/core';
+import { Component, OnInit, computed, inject, signal } from '@angular/core';
 import { Router, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 import { AuthService } from '../../core/services/auth.service';
+import { SettingsService } from '../../core/services/settings.service';
 import { NavItem } from '../../core/models/nav.model';
 
 @Component({
@@ -10,11 +11,16 @@ import { NavItem } from '../../core/models/nav.model';
   templateUrl: './main-layout.component.html',
   styleUrl: './main-layout.component.scss',
 })
-export class MainLayoutComponent {
+export class MainLayoutComponent implements OnInit {
   readonly auth = inject(AuthService);
+  private readonly settingsService = inject(SettingsService);
   private readonly router = inject(Router);
 
   readonly sidebarOpen = signal(false);
+
+  ngOnInit(): void {
+    this.settingsService.load().subscribe();
+  }
 
   private readonly allNavItems: NavItem[] = [
     { label: 'Dashboard', icon: 'bi-speedometer2', route: '/dashboard', exact: true },

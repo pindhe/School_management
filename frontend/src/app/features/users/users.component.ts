@@ -17,14 +17,25 @@ export class UsersComponent implements OnInit {
   readonly error = signal<string | null>(null);
   readonly users = signal<AppUserSummary[]>([]);
 
+  readonly adminCount = signal(0);
+  readonly guestCount = signal(0);
+
   ngOnInit(): void {
+    this.load();
+  }
+
+  load(): void {
+    this.loading.set(true);
+    this.error.set(null);
     this.userService.list().subscribe({
       next: (data) => {
         this.users.set(data);
+        this.adminCount.set(data.filter((u) => u.role === 'ADMIN').length);
+        this.guestCount.set(data.filter((u) => u.role === 'GUEST').length);
         this.loading.set(false);
       },
       error: () => {
-        this.error.set('Could not load users. Admin access required.');
+        this.error.set('Could not load users from database. Admin access required.');
         this.loading.set(false);
       },
     });

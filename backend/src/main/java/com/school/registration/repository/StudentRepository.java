@@ -9,6 +9,10 @@ import java.util.List;
 
 public interface StudentRepository extends JpaRepository<Student, Long> {
 
+    long countByPhotoPathIsNotNull();
+
+    List<Student> findTop5ByOrderByCreatedAtDesc();
+
     boolean existsByEmail(String email);
 
     boolean existsByEmailAndIdNot(String email, Long id);

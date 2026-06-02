@@ -130,7 +130,7 @@ public class StudentService {
         }
     }
 
-    private StudentResponse toResponse(Student student) {
+    public StudentResponse toResponse(Student student) {
         String photoUrl = StringUtils.hasText(student.getPhotoPath())
                 ? "/api/photos/" + student.getPhotoPath()
                 : null;

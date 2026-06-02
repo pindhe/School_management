@@ -4,10 +4,14 @@ import com.school.registration.domain.entity.AppUser;
 import com.school.registration.domain.enums.RoleName;
 import com.school.registration.dto.auth.AuthResponse;
 import com.school.registration.dto.auth.LoginRequest;
+import com.school.registration.dto.auth.ProfileResponse;
 import com.school.registration.dto.auth.RegisterRequest;
 import com.school.registration.exception.BadRequestException;
+import com.school.registration.exception.ResourceNotFoundException;
 import com.school.registration.repository.AppUserRepository;
+import com.school.registration.repository.StudentRepository;
 import com.school.registration.security.JwtService;
+import com.school.registration.security.SecurityUtils;
 import com.school.registration.security.UserPrincipal;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -22,6 +26,8 @@ import org.springframework.transaction.annotation.Transactional;
 public class AuthService {
 
     private final AppUserRepository appUserRepository;
+    private final StudentRepository studentRepository;
+    private final SettingsService settingsService;
     private final PasswordEncoder passwordEncoder;
     private final AuthenticationManager authenticationManager;
     private final JwtService jwtService;
@@ -56,8 +62,25 @@ public class AuthService {
                 .build();
 
         AppUser saved = appUserRepository.save(user);
+        settingsService.createDefaultSettings(saved);
         UserPrincipal principal = new UserPrincipal(saved);
         return buildAuthResponse(principal, jwtService.generateToken(principal));
+    }
+
+    @Transactional(readOnly = true)
+    public ProfileResponse getProfile() {
+        UserPrincipal principal = SecurityUtils.requireCurrentUser();
+        AppUser user = appUserRepository.findById(principal.getId())
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+        return ProfileResponse.builder()
+                .id(user.getId())
+                .username(user.getUsername())
+                .email(user.getEmail())
+                .role(user.getRole())
+                .enabled(user.isEnabled())
+                .createdAt(user.getCreatedAt())
+                .studentsManaged(studentRepository.count())
+                .build();
     }
 
     private AuthResponse buildAuthResponse(UserPrincipal principal, String token) {

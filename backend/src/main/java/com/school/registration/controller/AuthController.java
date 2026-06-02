@@ -2,6 +2,7 @@ package com.school.registration.controller;
 
 import com.school.registration.dto.auth.AuthResponse;
 import com.school.registration.dto.auth.LoginRequest;
+import com.school.registration.dto.auth.ProfileResponse;
 import com.school.registration.dto.auth.RegisterRequest;
 import com.school.registration.service.AuthService;
 import jakarta.validation.Valid;
@@ -25,5 +26,10 @@ public class AuthController {
     @ResponseStatus(HttpStatus.CREATED)
     public AuthResponse register(@Valid @RequestBody RegisterRequest request) {
         return authService.register(request);
+    }
+
+    @GetMapping("/me")
+    public ProfileResponse me() {
+        return authService.getProfile();
     }
 }

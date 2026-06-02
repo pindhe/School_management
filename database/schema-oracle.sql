@@ -1,29 +1,18 @@
 -- =============================================================================
 -- Student Registration System — Oracle Database Schema
 -- =============================================================================
--- This project uses exactly TWO tables (by design):
---
---   1. STUDENT   — Assignment table: id, name, address, phone, email, photo
---   2. APP_USER  — Login & registration with roles ADMIN and GUEST
---
--- No extra tables are required for the final project. Roles are stored on
--- APP_USER.ROLE (not a separate role table). Photos are stored as file paths
--- in STUDENT.PHOTO_PATH (uploaded by the Spring Boot API).
+-- Tables:
+--   1. APP_USER      — Login / register (ADMIN, GUEST)
+--   2. STUDENT       — Assignment: id, name, address, phone, email, photo
+--   3. USER_SETTINGS — Per-user preferences (Settings page)
 -- =============================================================================
 
 -- Drop existing objects (re-run safe)
-BEGIN
-   EXECUTE IMMEDIATE 'DROP TABLE student CASCADE CONSTRAINTS';
-EXCEPTION
-   WHEN OTHERS THEN IF SQLCODE != -942 THEN RAISE; END IF;
-END;
+BEGIN EXECUTE IMMEDIATE 'DROP TABLE user_settings CASCADE CONSTRAINTS'; EXCEPTION WHEN OTHERS THEN IF SQLCODE != -942 THEN RAISE; END IF; END;
 /
-
-BEGIN
-   EXECUTE IMMEDIATE 'DROP TABLE app_user CASCADE CONSTRAINTS';
-EXCEPTION
-   WHEN OTHERS THEN IF SQLCODE != -942 THEN RAISE; END IF;
-END;
+BEGIN EXECUTE IMMEDIATE 'DROP TABLE student CASCADE CONSTRAINTS'; EXCEPTION WHEN OTHERS THEN IF SQLCODE != -942 THEN RAISE; END IF; END;
+/
+BEGIN EXECUTE IMMEDIATE 'DROP TABLE app_user CASCADE CONSTRAINTS'; EXCEPTION WHEN OTHERS THEN IF SQLCODE != -942 THEN RAISE; END IF; END;
 /
 
 -- -----------------------------------------------------------------------------
@@ -71,4 +60,21 @@ CREATE INDEX idx_student_name  ON student (name);
 CREATE INDEX idx_student_email ON student (email);
 CREATE INDEX idx_student_phone ON student (phone);
 
--- Optional: run seed-oracle.sql after this script for demo data
+-- -----------------------------------------------------------------------------
+-- Table 3: USER_SETTINGS — saved preferences per user (Settings page)
+-- -----------------------------------------------------------------------------
+CREATE TABLE user_settings (
+    id                   NUMBER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    user_id              NUMBER NOT NULL,
+    compact_tables       NUMBER(1) DEFAULT 0 NOT NULL,
+    email_notifications  NUMBER(1) DEFAULT 1 NOT NULL,
+    updated_at           TIMESTAMP,
+    CONSTRAINT fk_user_settings_user FOREIGN KEY (user_id) REFERENCES app_user (id) ON DELETE CASCADE,
+    CONSTRAINT uq_user_settings_user UNIQUE (user_id),
+    CONSTRAINT chk_user_settings_compact CHECK (compact_tables IN (0, 1)),
+    CONSTRAINT chk_user_settings_email CHECK (email_notifications IN (0, 1))
+);
+
+COMMENT ON TABLE user_settings IS 'Per-user UI preferences';
+
+-- Optional: run seed-oracle.sql after this script for demo students

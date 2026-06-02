@@ -23,3 +23,17 @@
   font-size: 0.8rem;
   color: #64748b;
 }
+
+.avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.avatar.placeholder {
+  display: grid;
+  place-items: center;
+  background: #e9ecef;
+  color: #6c757d;
+}

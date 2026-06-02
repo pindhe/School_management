@@ -2,14 +2,17 @@
   <div class="text-center py-5">
     <div class="spinner-border text-primary"></div>
   </div>
+} @else if (error()) {
+  <div class="alert alert-danger">{{ error() }}</div>
 } @else {
+  @if (stats(); as s) {
   <div class="row g-3 mb-4">
     <div class="col-6 col-lg-3">
       <div class="stat-card card border-0 shadow-sm">
         <div class="card-body">
           <div class="stat-icon bg-primary-subtle text-primary"><i class="bi bi-people"></i></div>
-          <div class="stat-value">{{ totalStudents() }}</div>
-          <div class="stat-label">Total students</div>
+          <div class="stat-value">{{ s.totalStudents }}</div>
+          <div class="stat-label">Students in database</div>
         </div>
       </div>
     </div>
@@ -17,17 +20,17 @@
       <div class="stat-card card border-0 shadow-sm">
         <div class="card-body">
           <div class="stat-icon bg-success-subtle text-success"><i class="bi bi-camera"></i></div>
-          <div class="stat-value">{{ withPhoto() }}</div>
-          <div class="stat-label">With photo</div>
+          <div class="stat-value">{{ s.studentsWithPhoto }}</div>
+          <div class="stat-label">With photo uploaded</div>
         </div>
       </div>
     </div>
     <div class="col-6 col-lg-3">
       <div class="stat-card card border-0 shadow-sm">
         <div class="card-body">
-          <div class="stat-icon bg-info-subtle text-info"><i class="bi bi-envelope"></i></div>
-          <div class="stat-value">{{ uniqueDomains() }}</div>
-          <div class="stat-label">Email domains</div>
+          <div class="stat-icon bg-info-subtle text-info"><i class="bi bi-person-gear"></i></div>
+          <div class="stat-value">{{ s.totalUsers }}</div>
+          <div class="stat-label">System users (DB)</div>
         </div>
       </div>
     </div>
@@ -35,8 +38,8 @@
       <div class="stat-card card border-0 shadow-sm">
         <div class="card-body">
           <div class="stat-icon bg-warning-subtle text-warning"><i class="bi bi-shield-check"></i></div>
-          <div class="stat-value">{{ auth.user()?.role }}</div>
-          <div class="stat-label">Your role</div>
+          <div class="stat-value">{{ s.adminUsers }} / {{ s.guestUsers }}</div>
+          <div class="stat-label">Admin / Guest users</div>
         </div>
       </div>
     </div>
@@ -46,22 +49,30 @@
     <div class="col-lg-8">
       <div class="card border-0 shadow-sm h-100">
         <div class="card-header bg-white border-0 d-flex justify-content-between align-items-center">
-          <h2 class="h6 fw-bold mb-0">Recent students</h2>
+          <h2 class="h6 fw-bold mb-0">Recent students (live from DB)</h2>
           <a routerLink="/students" class="btn btn-sm btn-outline-primary">View all</a>
         </div>
         <div class="card-body p-0">
-          @if (recentStudents().length === 0) {
-            <p class="text-secondary p-4 mb-0">No students registered yet.</p>
+          @if (s.recentStudents.length === 0) {
+            <p class="text-secondary p-4 mb-0">No students in database yet.</p>
           } @else {
             <ul class="list-group list-group-flush">
-              @for (s of recentStudents(); track s.id) {
-                <li class="list-group-item d-flex justify-content-between align-items-center">
-                  <div>
-                    <span class="fw-semibold">{{ s.name }}</span>
-                    <small class="d-block text-secondary">{{ s.email }}</small>
+              @for (st of s.recentStudents; track st.id) {
+                <li class="list-group-item d-flex align-items-center gap-3">
+                  @if (photoUrl(st); as src) {
+                    <img [src]="src" alt="" class="avatar" />
+                  } @else {
+                    <div class="avatar placeholder"><i class="bi bi-person"></i></div>
+                  }
+                  <div class="flex-grow-1">
+                    <span class="fw-semibold">{{ st.name }}</span>
+                    <small class="d-block text-secondary">{{ st.email }}</small>
+                    @if (st.createdAt) {
+                      <small class="text-muted">Added {{ st.createdAt | date: 'medium' }}</small>
+                    }
                   </div>
                   @if (auth.isAdmin()) {
-                    <a class="btn btn-sm btn-light" [routerLink]="['/students', s.id, 'edit']">Edit</a>
+                    <a class="btn btn-sm btn-light" [routerLink]="['/students', st.id, 'edit']">Edit</a>
                   }
                 </li>
               }
@@ -82,20 +93,18 @@
           </a>
           @if (auth.isAdmin()) {
             <a routerLink="/students/new" class="btn btn-primary text-start">
-              <i class="bi bi-person-plus me-2"></i> Register new student
+              <i class="bi bi-person-plus me-2"></i> Add student
             </a>
             <a routerLink="/reports" class="btn btn-outline-secondary text-start">
-              <i class="bi bi-bar-chart me-2"></i> View reports
+              <i class="bi bi-bar-chart me-2"></i> Reports
             </a>
             <a routerLink="/users" class="btn btn-outline-secondary text-start">
-              <i class="bi bi-shield-lock me-2"></i> Manage users
+              <i class="bi bi-shield-lock me-2"></i> Users ({{ s.totalUsers }})
             </a>
           }
-          <a routerLink="/profile" class="btn btn-outline-secondary text-start">
-            <i class="bi bi-person-badge me-2"></i> My profile
-          </a>
         </div>
       </div>
     </div>
   </div>
+  }
 }
