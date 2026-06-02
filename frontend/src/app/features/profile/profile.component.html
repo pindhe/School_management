@@ -1,0 +1,30 @@
+<div class="row justify-content-center">
+  <div class="col-lg-6">
+    <div class="card border-0 shadow-sm">
+      <div class="card-body p-4 text-center">
+        <div class="profile-avatar mx-auto mb-3">
+          <i class="bi bi-person-fill"></i>
+        </div>
+        <h2 class="h4 fw-bold">{{ auth.user()?.username }}</h2>
+        <p class="text-secondary mb-3">{{ auth.user()?.email }}</p>
+        <span class="badge fs-6" [class.text-bg-primary]="auth.isAdmin()" [class.text-bg-secondary]="!auth.isAdmin()">
+          {{ auth.user()?.role }}
+        </span>
+      </div>
+      <ul class="list-group list-group-flush">
+        <li class="list-group-item d-flex justify-content-between">
+          <span class="text-secondary">User ID</span>
+          <span class="fw-semibold">{{ auth.user()?.userId }}</span>
+        </li>
+        <li class="list-group-item d-flex justify-content-between">
+          <span class="text-secondary">Access level</span>
+          <span>{{ auth.isAdmin() ? 'Full administration' : 'Read-only (Guest)' }}</span>
+        </li>
+        <li class="list-group-item d-flex justify-content-between">
+          <span class="text-secondary">Token type</span>
+          <span>{{ auth.user()?.type ?? 'Bearer' }}</span>
+        </li>
+      </ul>
+    </div>
+  </div>
+</div>

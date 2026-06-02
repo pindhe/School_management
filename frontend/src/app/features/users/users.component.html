@@ -1,0 +1,46 @@
+<p class="text-secondary mb-4">System accounts with Admin or Guest roles.</p>
+
+@if (loading()) {
+  <div class="text-center py-5"><div class="spinner-border text-primary"></div></div>
+} @else if (error()) {
+  <div class="alert alert-danger">{{ error() }}</div>
+} @else {
+  <div class="card border-0 shadow-sm">
+    <div class="table-responsive">
+      <table class="table table-hover align-middle mb-0">
+        <thead class="table-light">
+          <tr>
+            <th>Username</th>
+            <th>Email</th>
+            <th>Role</th>
+            <th>Status</th>
+            <th class="d-none d-md-table-cell">Created</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (u of users(); track u.id) {
+            <tr>
+              <td class="fw-semibold">{{ u.username }}</td>
+              <td>{{ u.email }}</td>
+              <td>
+                <span class="badge" [class.text-bg-warning]="u.role === 'ADMIN'" [class.text-bg-secondary]="u.role === 'GUEST'">
+                  {{ u.role }}
+                </span>
+              </td>
+              <td>
+                @if (u.enabled) {
+                  <span class="badge text-bg-success">Active</span>
+                } @else {
+                  <span class="badge text-bg-danger">Disabled</span>
+                }
+              </td>
+              <td class="d-none d-md-table-cell text-secondary small">
+                {{ u.createdAt | date: 'medium' }}
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  </div>
+}

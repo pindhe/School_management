@@ -1,0 +1,59 @@
+@if (loading()) {
+  <div class="text-center py-5"><div class="spinner-border text-primary"></div></div>
+} @else {
+  <p class="text-secondary mb-4">Registration analytics based on current student records.</p>
+
+  <div class="row g-4">
+    <div class="col-md-4">
+      <div class="card border-0 shadow-sm text-center h-100">
+        <div class="card-body py-4">
+          <div class="display-4 fw-bold text-primary">{{ students().length }}</div>
+          <div class="text-secondary">Registered students</div>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="card border-0 shadow-sm text-center h-100">
+        <div class="card-body py-4">
+          <div class="display-4 fw-bold text-success">{{ photoCoverage() }}%</div>
+          <div class="text-secondary">Photo coverage</div>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="card border-0 shadow-sm text-center h-100">
+        <div class="card-body py-4">
+          <div class="display-4 fw-bold text-info">{{ topDomains().length }}</div>
+          <div class="text-secondary">Unique email domains</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card border-0 shadow-sm mt-4">
+    <div class="card-header bg-white border-0">
+      <h2 class="h6 fw-bold mb-0">Students by email domain</h2>
+    </div>
+    <div class="card-body">
+      @if (topDomains().length === 0) {
+        <p class="text-secondary mb-0">No data available.</p>
+      } @else {
+        @for (d of topDomains(); track d.domain) {
+          <div class="mb-3">
+            <div class="d-flex justify-content-between small mb-1">
+              <span>{{ d.domain }}</span>
+              <span class="fw-semibold">{{ d.count }}</span>
+            </div>
+            <div class="progress" style="height: 8px">
+              <div
+                class="progress-bar"
+                role="progressbar"
+                [style.width.%]="(d.count / maxDomainCount()) * 100"
+              ></div>
+            </div>
+          </div>
+        }
+      }
+    </div>
+  </div>
+}

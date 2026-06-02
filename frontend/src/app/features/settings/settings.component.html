@@ -1,0 +1,19 @@
+<p class="text-secondary mb-4">Application preferences stored in your browser.</p>
+
+<div class="card border-0 shadow-sm col-lg-8">
+  <div class="card-body p-4">
+    @if (saved()) {
+      <div class="alert alert-success py-2">Settings saved.</div>
+    }
+
+    <div class="form-check form-switch mb-3">
+      <input class="form-check-input" type="checkbox" id="compact" [(ngModel)]="compactTables" />
+      <label class="form-check-label" for="compact">Compact table layout</label>
+    </div>
+    <div class="form-check form-switch mb-4">
+      <input class="form-check-input" type="checkbox" id="email" [(ngModel)]="emailNotifications" />
+      <label class="form-check-label" for="email">Email notifications (demo)</label>
+    </div>
+    <button type="button" class="btn btn-primary" (click)="save()">Save settings</button>
+  </div>
+</div>

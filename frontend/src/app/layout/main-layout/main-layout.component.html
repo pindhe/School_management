@@ -1,47 +1,71 @@
-<div class="app-shell">
-  <nav class="navbar navbar-expand-lg navbar-dark bg-primary shadow-sm sticky-top">
-    <div class="container-fluid px-3 px-lg-4">
-      <a class="navbar-brand fw-bold d-flex align-items-center gap-2" routerLink="/students">
-        <i class="bi bi-mortarboard-fill"></i>
-        <span>Student Registration</span>
-      </a>
-      <button
-        class="navbar-toggler"
-        type="button"
-        data-bs-toggle="collapse"
-        data-bs-target="#mainNav"
-        aria-controls="mainNav"
-        aria-expanded="false"
-        aria-label="Toggle navigation"
-      >
-        <span class="navbar-toggler-icon"></span>
-      </button>
-      <div class="collapse navbar-collapse" id="mainNav">
-        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-          <li class="nav-item">
-            <a class="nav-link" routerLink="/students" routerLinkActive="active">Students</a>
-          </li>
-          @if (auth.isAdmin()) {
-            <li class="nav-item">
-              <a class="nav-link" routerLink="/students/new" routerLinkActive="active">Add student</a>
-            </li>
-          }
-        </ul>
-        <div class="d-flex align-items-center gap-3 text-white-50 small">
-          <span>
-            <i class="bi bi-person-circle me-1"></i>
-            {{ auth.user()?.username }}
-            <span class="badge ms-1" [class.text-bg-warning]="auth.isAdmin()" [class.text-bg-light]="!auth.isAdmin()">
-              {{ auth.user()?.role }}
-            </span>
-          </span>
-          <button class="btn btn-outline-light btn-sm" type="button" (click)="auth.logout()">Logout</button>
-        </div>
+<div class="admin-shell" [class.sidebar-open]="sidebarOpen()">
+  @if (sidebarOpen()) {
+    <button
+      type="button"
+      class="sidebar-backdrop d-lg-none"
+      aria-label="Close menu"
+      (click)="closeSidebarOnMobile()"
+    ></button>
+  }
+
+  <aside class="sidebar">
+    <div class="sidebar-brand">
+      <i class="bi bi-mortarboard-fill"></i>
+      <div>
+        <strong>SRS Admin</strong>
+        <small>Student Registration</small>
       </div>
     </div>
-  </nav>
 
-  <main class="container-fluid px-3 px-lg-4 py-4">
-    <router-outlet />
-  </main>
+    <nav class="sidebar-nav">
+      @for (item of navItems(); track item.route) {
+        <a
+          class="sidebar-link"
+          [routerLink]="item.route"
+          routerLinkActive="active"
+          [routerLinkActiveOptions]="{ exact: item.exact ?? false }"
+          (click)="closeSidebarOnMobile()"
+        >
+          <i class="bi" [class]="item.icon"></i>
+          <span>{{ item.label }}</span>
+        </a>
+      }
+    </nav>
+
+    <div class="sidebar-footer">
+      <div class="user-chip">
+        <i class="bi bi-person-circle"></i>
+        <div>
+          <span class="fw-semibold">{{ auth.user()?.username }}</span>
+          <span class="role-badge" [class.admin]="auth.isAdmin()">{{ auth.user()?.role }}</span>
+        </div>
+      </div>
+      <button type="button" class="btn btn-outline-light btn-sm w-100 mt-2" (click)="auth.logout()">
+        <i class="bi bi-box-arrow-right me-1"></i> Logout
+      </button>
+    </div>
+  </aside>
+
+  <div class="main-panel">
+    <header class="topbar">
+      <div class="d-flex align-items-center gap-2">
+        <button type="button" class="btn btn-light btn-icon d-lg-none" (click)="toggleSidebar()">
+          <i class="bi bi-list"></i>
+        </button>
+        <div>
+          <h1 class="topbar-title mb-0">{{ pageTitle() }}</h1>
+          <small class="text-secondary">Student Registration System</small>
+        </div>
+      </div>
+      <div class="topbar-actions d-none d-md-flex align-items-center gap-2">
+        <span class="badge rounded-pill" [class.text-bg-primary]="auth.isAdmin()" [class.text-bg-secondary]="!auth.isAdmin()">
+          {{ auth.isAdmin() ? 'Administrator' : 'Guest' }}
+        </span>
+      </div>
+    </header>
+
+    <main class="page-content">
+      <router-outlet />
+    </main>
+  </div>
 </div>

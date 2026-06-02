@@ -1,0 +1,101 @@
+@if (loading()) {
+  <div class="text-center py-5">
+    <div class="spinner-border text-primary"></div>
+  </div>
+} @else {
+  <div class="row g-3 mb-4">
+    <div class="col-6 col-lg-3">
+      <div class="stat-card card border-0 shadow-sm">
+        <div class="card-body">
+          <div class="stat-icon bg-primary-subtle text-primary"><i class="bi bi-people"></i></div>
+          <div class="stat-value">{{ totalStudents() }}</div>
+          <div class="stat-label">Total students</div>
+        </div>
+      </div>
+    </div>
+    <div class="col-6 col-lg-3">
+      <div class="stat-card card border-0 shadow-sm">
+        <div class="card-body">
+          <div class="stat-icon bg-success-subtle text-success"><i class="bi bi-camera"></i></div>
+          <div class="stat-value">{{ withPhoto() }}</div>
+          <div class="stat-label">With photo</div>
+        </div>
+      </div>
+    </div>
+    <div class="col-6 col-lg-3">
+      <div class="stat-card card border-0 shadow-sm">
+        <div class="card-body">
+          <div class="stat-icon bg-info-subtle text-info"><i class="bi bi-envelope"></i></div>
+          <div class="stat-value">{{ uniqueDomains() }}</div>
+          <div class="stat-label">Email domains</div>
+        </div>
+      </div>
+    </div>
+    <div class="col-6 col-lg-3">
+      <div class="stat-card card border-0 shadow-sm">
+        <div class="card-body">
+          <div class="stat-icon bg-warning-subtle text-warning"><i class="bi bi-shield-check"></i></div>
+          <div class="stat-value">{{ auth.user()?.role }}</div>
+          <div class="stat-label">Your role</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row g-4">
+    <div class="col-lg-8">
+      <div class="card border-0 shadow-sm h-100">
+        <div class="card-header bg-white border-0 d-flex justify-content-between align-items-center">
+          <h2 class="h6 fw-bold mb-0">Recent students</h2>
+          <a routerLink="/students" class="btn btn-sm btn-outline-primary">View all</a>
+        </div>
+        <div class="card-body p-0">
+          @if (recentStudents().length === 0) {
+            <p class="text-secondary p-4 mb-0">No students registered yet.</p>
+          } @else {
+            <ul class="list-group list-group-flush">
+              @for (s of recentStudents(); track s.id) {
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                  <div>
+                    <span class="fw-semibold">{{ s.name }}</span>
+                    <small class="d-block text-secondary">{{ s.email }}</small>
+                  </div>
+                  @if (auth.isAdmin()) {
+                    <a class="btn btn-sm btn-light" [routerLink]="['/students', s.id, 'edit']">Edit</a>
+                  }
+                </li>
+              }
+            </ul>
+          }
+        </div>
+      </div>
+    </div>
+
+    <div class="col-lg-4">
+      <div class="card border-0 shadow-sm h-100">
+        <div class="card-header bg-white border-0">
+          <h2 class="h6 fw-bold mb-0">Quick actions</h2>
+        </div>
+        <div class="card-body d-grid gap-2">
+          <a routerLink="/students" class="btn btn-outline-primary text-start">
+            <i class="bi bi-search me-2"></i> Browse students
+          </a>
+          @if (auth.isAdmin()) {
+            <a routerLink="/students/new" class="btn btn-primary text-start">
+              <i class="bi bi-person-plus me-2"></i> Register new student
+            </a>
+            <a routerLink="/reports" class="btn btn-outline-secondary text-start">
+              <i class="bi bi-bar-chart me-2"></i> View reports
+            </a>
+            <a routerLink="/users" class="btn btn-outline-secondary text-start">
+              <i class="bi bi-shield-lock me-2"></i> Manage users
+            </a>
+          }
+          <a routerLink="/profile" class="btn btn-outline-secondary text-start">
+            <i class="bi bi-person-badge me-2"></i> My profile
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+}
